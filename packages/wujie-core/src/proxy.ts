@@ -3,7 +3,14 @@ import { renderElementToContainer } from "./shadow";
 import { pushUrlToWindow } from "./sync";
 import { documentProxyProperties, rawDocumentQuerySelector } from "./common";
 import { WUJIE_TIPS_RELOAD_DISABLED } from "./constant";
-import { getTargetValue, anchorElementGenerator, getDegradeIframe, isCallable, warn } from "./utils";
+import {
+  getTargetValue,
+  anchorElementGenerator,
+  getDegradeIframe,
+  isCallable,
+  checkIsSetFunction,
+  warn,
+} from "./utils";
 
 /**
  * location href 的set劫持操作
@@ -58,6 +65,7 @@ export function proxyGenerator(
     },
 
     set: (target: Window, p: PropertyKey, value: any) => {
+      checkIsSetFunction(value);
       target[p] = value;
       return true;
     },

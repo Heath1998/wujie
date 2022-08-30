@@ -73,9 +73,18 @@ export function isConstructable(fn: () => any | FunctionConstructor) {
   return constructable;
 }
 
+const setFnCacheMap = new WeakMap<CallableFunction, boolean>();
+export function checkIsSetFunction(value: any) {
+  if (isCallable(value) && !isBoundedFunction(value) && !isConstructable(value)) {
+    if (!setFnCacheMap.has(value)) {
+      setFnCacheMap.set(value, true);
+    }
+  }
+}
+
 export function getTargetValue(target: any, p: any): any {
   const value = target[p];
-  if (isCallable(value) && !isBoundedFunction(value) && !isConstructable(value)) {
+  if (isCallable(value) && !isBoundedFunction(value) && !isConstructable(value) && !setFnCacheMap.has(value)) {
     const boundValue = Function.prototype.bind.call(value, target);
 
     for (const key in value) {
